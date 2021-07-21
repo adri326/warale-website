@@ -1,0 +1,28 @@
+@font-face {
+    font-family: "Warale";
+    src: url("/static/font/Warale Font.ttf") format("truetype");
+}
+
+body {
+    background: black;
+    font-family: "Warale", mono;
+    font-smooth: never;
+    -webkit-font-smoothing: none;
+    font-size: 10px;
+    line-height: 1.2em;
+    color: white;
+}
+
+.rexpaint {
+    /* user-select: none; */
+}
+
+.rexpaint div {
+    height: 1.2em;
+}
+
+.rexpaint span {
+    display: inline-block;
+    width: 1.2em;
+    height: 1.2em;
+}

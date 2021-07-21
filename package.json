@@ -1,0 +1,27 @@
+{
+  "name": "warale-website",
+  "version": "0.1.0",
+  "description": "Website for the Dwarf Fortress community fort \"Warale the Ageless Elder\", containing the yearly saves, journals and manuals",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adri326/warale-website.git"
+  },
+  "keywords": [
+    "dwarffortress"
+  ],
+  "author": "Shad Amethyst",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/adri326/warale-website/issues"
+  },
+  "homepage": "https://github.com/adri326/warale-website#readme",
+  "dependencies": {
+    "@randy.tarampi/lwip": "^3.0.17",
+    "express": "^4.17.1",
+    "rexpaintjs-fork": "github:adri326/rexpaintjs-fork"
+  }
+}
