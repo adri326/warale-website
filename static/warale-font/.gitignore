@@ -1,0 +1,5 @@
+*.png~
+*.kra~
+build
+.DS_Store
+*.zip
