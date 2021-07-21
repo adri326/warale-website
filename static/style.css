@@ -12,10 +12,25 @@ body {
     font-size: 10px;
     line-height: 1.2em;
     color: white;
+    position: relative;
 }
 
-.rexpaint {
-    /* user-select: none; */
+div.rexpaint:not(.selectable) {
+    user-select: none;
+}
+
+div.rexpaint {
+    margin-top: -1px;
+    margin-bottom: 1px;
+}
+
+img.rexpaint {
+    image-rendering: optimizeSpeed;
+    image-rendering: -moz-crisp-edges; /* FF */
+    image-rendering: -o-crisp-edges; /* Opera */
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: pixelated; /* Chrome */
+    -ms-interpolation-mode: nearest-neighbor; /* IE8+ */
 }
 
 .rexpaint div {

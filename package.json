@@ -20,8 +20,8 @@
   },
   "homepage": "https://github.com/adri326/warale-website#readme",
   "dependencies": {
-    "@randy.tarampi/lwip": "^3.0.17",
     "express": "^4.17.1",
+    "jimp": "^0.16.1",
     "md5": "^2.3.0",
     "rexpaintjs-fork": "github:adri326/rexpaintjs-fork"
   }
