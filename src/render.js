@@ -1,5 +1,4 @@
 const rexpaint = require("rexpaintjs-fork");
-const lwip = require("@randy.tarampi/lwip");
 const fs = require("fs");
 const md5 = require("md5");
 const Jimp = require("jimp");
@@ -26,51 +25,64 @@ Jimp.read("static/warale-font/Warale Font.png").then((img) => {
 let cache = {};
 let cached_image = new Set();
 
-module.exports = function render(path, format = "", classes = "") {
-    if (Array.isArray(classes)) {
-        classes = classes.join(" ");
-    }
-
-    if (format === "html") {
-        if (cache[path]) {
-            return new Promise((resolve, reject) => {
-                resolve(module.exports.toHTML(cache[path], classes));
-            });
-        } else {
-            return new Promise((resolve, reject) => {
+module.exports = function render(path, format = "", options = {}) {
+    return new Promise((resolve, reject) => {
+        if (format === "html") {
+            if (cache[path]) {
+                resolve(module.exports.toHTML(cache[path], options));
+            } else {
                 fs.readFile(path, (err, buffer) => {
                     if (err) reject(err);
                     rexpaint(buffer).then(data => {
                         cache[path] = data;
-                        resolve(module.exports.toHTML(data, classes));
+                        resolve(module.exports.toHTML(data, options));
                     }).catch(reject);
                 });
-            });
-        }
-    } else if (format === "image") {
-        let output = `generated/${md5(path)}.png`;
-        if (cached_image.has(path)) {
-            return new Promise((resolve, reject) => {
-                resolve(`<img src="${output}" class="rexpaint ${classes}"`);
-            });
-        } else if (cache[path]) {
-            return module.exports.toImage(output, cache[path], classes);
-        } else {
-            return new Promise((resolve, reject) => {
+            }
+        } else if (format === "image") {
+            let output = `generated/${md5(path)}.png`;
+            if (cached_image.has(path)) {
+                resolve(generate_image_string(output, options));
+            } else if (cache[path]) {
+                module.exports.toImage(output, cache[path], options).then(resolve).catch(reject);
+            } else {
                 fs.readFile(path, (err, buffer) => {
                     if (err) reject(err);
                     rexpaint(buffer).then(data => {
                         cache[path] = data;
                         cached_image.add(path);
-                        module.exports.toImage(output, data, classes).then(resolve).catch(reject);
+                        module.exports.toImage(output, data, options).then(resolve).catch(reject);
                     }).catch(reject);
                 });
-            });
+            }
         }
-    }
+    });
 }
 
-module.exports.toHTML = function toHTML(image, classes = "") {
+module.exports.load = function load(path) {
+    return new Promise((resolve, reject) => {
+        if (cache[path]) {
+            resolve(cache[path]);
+        } else {
+            fs.readFile(path, (err, buffer) => {
+                if (err) reject(err);
+                rexpaint(buffer).then(data => {
+                    cache[path] = data;
+                    resolve(data);
+                }).catch(reject);
+            });
+        }
+    });
+}
+
+module.exports.toHTML = function toHTML(image, options = {}) {
+    let classes;
+    if (Array.isArray(options.classes ?? [])) {
+        classes = (options.classes ?? []).join(" ");
+    } else {
+        classes = options.classes.toString();
+    }
+
     function escapeHTML(str) {
         return str.replace(/&/g, '&amp;')
             .replace(/"/g, '&quot;')
@@ -136,7 +148,28 @@ function render_pixel(image, font, x, y, pixel) {
     }
 }
 
-module.exports.toImage = async function toImage(output, image, classes = "") {
+function generate_image_string(output, options) {
+    let classes;
+    if (Array.isArray(options.classes ?? [])) {
+        classes = (options.classes ?? []).join(" ");
+    } else {
+        classes = options.classes.toString();
+    }
+
+    let res = `<img src="${output}"`;
+
+    if (options.alt) {
+        res += " alt=\"" + options.alt + "\"";
+    }
+
+    res += ` class="rexpaint ${classes}"`;
+
+    res += ` />`;
+
+    return res;
+}
+
+module.exports.toImage = async function toImage(output, image, options = {}) {
     let font = await get_font();
     let res = await jimp_create(image.width * FONT_WIDTH, image.height * FONT_HEIGHT);
 
@@ -150,5 +183,5 @@ module.exports.toImage = async function toImage(output, image, classes = "") {
 
     await res.write(output);
 
-    return `<img src="${output}" class="rexpaint ${classes}" />`;
+    return generate_image_string(output, options);
 }

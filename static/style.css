@@ -1,10 +1,13 @@
 @font-face {
     font-family: "Warale";
-    src: url("/static/warale-font/Warale Font.ttf") format("truetype"),
+    src: local("Warale Font"),
+        url("/static/warale-font/Warale Font.ttf") format("truetype"),
         url("/static/warale-font/Warale Font.woff") format("woff");
 }
 
 body {
+    margin: 0;
+    margin-right: var(--body-margin-right);
     background: black;
     font-family: "Warale", mono;
     font-smooth: never;
@@ -13,6 +16,13 @@ body {
     line-height: 1.2em;
     color: white;
     position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    min-height: 100vh;
+    padding-top: 4em;
+    box-sizing: border-box;
 }
 
 div.rexpaint:not(.selectable) {
@@ -31,6 +41,7 @@ img.rexpaint {
     image-rendering: -webkit-optimize-contrast;
     image-rendering: pixelated; /* Chrome */
     -ms-interpolation-mode: nearest-neighbor; /* IE8+ */
+    max-width: 100vw;
 }
 
 .rexpaint div {
@@ -41,4 +52,60 @@ img.rexpaint {
     display: inline-block;
     width: 1.2em;
     height: 1.2em;
+}
+
+.hidden {
+    display: none;
+}
+
+main {
+    margin-top: 2.4em;
+    border: 12px solid orange;
+    padding: 1.2em;
+    width: calc(120 * 1.2em);
+    border-image: url("/generated/borders.png") 12 repeat;
+    background: var(--main-background);
+    line-height: 1.4em;
+    color: #e8e8ea;
+}
+
+body.non-pixel-font main {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 14px;
+}
+
+h1 {
+    font-size: inherit;
+    font-weight: normal;
+    color: #ffffff;
+    text-decoration: underline;
+    display: inline;
+}
+
+a {
+    color: var(--link-color);
+}
+
+a:visited {
+    color: var(--link-color);
+    filter: lighten(0.2);
+}
+
+@media (max-width: 1600px) {
+    main {
+        width: calc(60 * 1.2em);
+    }
+}
+
+@media (max-width: 800px) {
+    main {
+        width: calc(30 * 1.2em);
+    }
+}
+
+@media (max-width: 400px) {
+    main {
+        width: 100vw;
+        box-sizing: border-box;
+    }
 }

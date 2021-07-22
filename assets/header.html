@@ -3,11 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Warale the Ageless Elder</title>
-    <link rel="stylesheet" href="static/style.css">
+    <title>{{TITLE}}</title>
+    <link rel="preload" href="/static/style.css" as="style" type="text/css" crossorigin>
+    <link rel="preload" href="/generated/borders.png" as="image" type="image/png" crossorigin>
+    <link rel="preload" href="/static/warale-font/Warale Font.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="stylesheet" href="/static/style.css">
+    <script defer>
+        let body_margin_right = 0;
+        function set_body_margin_right() {
+            if (window.innerWidth % 2 != body_margin_right) {
+                body_margin_right = window.innerWidth % 2;
+                document.body.style.setProperty("--body-margin-right", body_margin_right + "px");
+
+            }
+        }
+
+        if (document.body) {
+            set_body_margin_right();
+        } else {
+            window.addEventListener("load", set_body_margin_right);
+        }
+        window.addEventListener("resize", set_body_margin_right);
+    </script>
 </head>
-<body>
-    <section>
-        Hello, this is a test of how the browser renders this font.
-        <br />
-    </section>
+<body style="{{BODY_STYLE}} --body-margin-right: 0px;">
+    {{TITLE_IMG}}
+    <main>
+        {{DESCRIPTION}}
+    </main>
