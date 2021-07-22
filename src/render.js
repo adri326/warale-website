@@ -55,6 +55,18 @@ module.exports = function render(path, format = "", options = {}) {
                     }).catch(reject);
                 });
             }
+        } else if (format === "json") {
+            if (cache[path]) {
+                resolve(module.exports.toJSON(cache[path], options));
+            } else {
+                fs.readFile(path, (err, buffer) => {
+                    if (err) reject(err);
+                    rexpaint(buffer).then(data => {
+                        cache[path] = data;
+                        resolve(module.exports.toJSON(data, options));
+                    }).catch(reject);
+                });
+            }
         }
     });
 }
@@ -188,4 +200,14 @@ module.exports.toImage = async function toImage(output, image, options = {}) {
     await res.write(output);
 
     return generate_image_string(output, options, image.width * FONT_WIDTH, image.height * FONT_HEIGHT);
+}
+
+module.exports.toJSON = async function toJSON(image, options = {}) {
+    if (options.merged) {
+        let res = new rexpaint.Image(-1, image.width, image.height);
+        res.layers.push(image.mergeLayers());
+        return JSON.stringify(res);
+    } else {
+        return JSON.stringify(image);
+    }
 }

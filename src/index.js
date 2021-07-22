@@ -41,6 +41,23 @@ app.get("/", async (req, res) => {
     res.send();
 });
 
+app.get("/xp.json", async (req, res) => {
+    let file = req.query.file;
+    if (/^[a-wA-W0-9\-_]+\.xp$/.exec(file) && fs.existsSync(`assets/${file}`)) {
+        res.write(await render(`assets/${file}`, "json", {
+            merged: req.query.merged
+        }));
+        res.send();
+    } else {
+        res.status(403);
+        res.send({
+            code: 403,
+            error: "Forbidden",
+            reason: "Couldn't read file: invalid name or missing file"
+        });
+    }
+});
+
 app.use("/static", express.static("./static"));
 app.use("/generated", express.static("./generated"));
 

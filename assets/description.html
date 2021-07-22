@@ -19,3 +19,66 @@ is a <a href="https://bay12games.com/dwarves/">Dwarf Fortress</a> community/bloo
     A player's turn is one year or 48 hours.
     The next year's player is determined by a dice roll (1d20); the highest roll gets to play next year.
 </p>
+
+<h2>Contraptions</h2>
+
+<!-- Grinder animation; I don't know if keeping them like that is a good idea. Each frame takes 0.5ms to render, but this code is awful -->
+<div style="float: right;">
+    <canvas id="grinder" width="192" height="48" style="margin-left: 12px;">Your browser does not support canvases :(</canvas>
+    <script defer>(() => {
+        const FPS = 20;
+        const LEFT = 2;
+        const TOP = 1;
+        const WIDTH = 9;
+        const STEPS = 2 * WIDTH;
+        let canvas = document.getElementById("grinder");
+        let ctx = canvas.getContext("2d");
+        let grinder_json = null;
+
+        let last_frame = new Date();
+        let first_frame = new Date();
+        let timestep = 0;
+
+        function get_coordinates() {
+            let x, y;
+            if (timestep < WIDTH) {
+                return [LEFT + timestep, TOP];
+            } else {
+                return [LEFT + 2 * WIDTH - 1 - timestep, TOP + 1];
+            }
+        }
+
+        function grinder_loop() {
+            let [sx, sy] = get_coordinates();
+            render_char(ctx, sx, sy, get_char(grinder_json, sx, sy));
+
+            timestep = ~~((new Date() - first_frame) / 1000 * FPS) % STEPS;
+
+            let [ex, ey] = get_coordinates();
+            render_char(ctx, ex, ey, {
+                fg: {r: 0, g: 0, b: 0, hex: "000000"},
+                bg: {r: 200, g: 200, b: 200, hex: "c8c8c8"},
+                transparent: false,
+                asciiCode: 254
+            });
+
+            let dt = new Date() - last_frame
+            last_frame = new Date();
+            setTimeout(grinder_loop, Math.max(1000 / FPS / 2, 1000 / FPS - dt));
+        }
+
+        fetch("/xp.json?file=grinder.xp&merged=1").then(response => response.json()).then(json => {
+            grinder_json = json;
+
+            get_font().then(() => {
+                render(ctx, grinder_json);
+                grinder_loop();
+            }).catch(console.error);
+        }).catch(console.error);
+    })();</script>
+</div>
+
+<p>
+    Mischiefsteel features a Grinder: a high-velocity, silver minecart on a loop across the entrance.
+    Any creature going through its path become crushed by its weight.
+</p>
