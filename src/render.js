@@ -23,7 +23,7 @@ Jimp.read("static/warale-font/Warale Font.png").then((img) => {
 });
 
 let cache = {};
-let cached_image = new Set();
+let cached_image = {};
 
 module.exports = function render(path, format = "", options = {}) {
     return new Promise((resolve, reject) => {
@@ -41,8 +41,8 @@ module.exports = function render(path, format = "", options = {}) {
             }
         } else if (format === "image") {
             let output = `generated/${md5(path)}.png`;
-            if (cached_image.has(path)) {
-                resolve(generate_image_string(output, options));
+            if (cached_image[path]) {
+                resolve(generate_image_string(output, options, cached_image[path][0], cached_image[path][1]));
             } else if (cache[path]) {
                 module.exports.toImage(output, cache[path], options).then(resolve).catch(reject);
             } else {
@@ -50,7 +50,7 @@ module.exports = function render(path, format = "", options = {}) {
                     if (err) reject(err);
                     rexpaint(buffer).then(data => {
                         cache[path] = data;
-                        cached_image.add(path);
+                        cached_image[path] = [data.width * FONT_WIDTH, data.height * FONT_HEIGHT];
                         module.exports.toImage(output, data, options).then(resolve).catch(reject);
                     }).catch(reject);
                 });
@@ -148,7 +148,7 @@ function render_pixel(image, font, x, y, pixel) {
     }
 }
 
-function generate_image_string(output, options) {
+function generate_image_string(output, options, width = null, height = null) {
     let classes;
     if (Array.isArray(options.classes ?? [])) {
         classes = (options.classes ?? []).join(" ");
@@ -163,6 +163,10 @@ function generate_image_string(output, options) {
     }
 
     res += ` class="rexpaint ${classes}"`;
+
+    if (width && height) {
+        res += ` width="${width}" height="${height}"`;
+    }
 
     res += ` />`;
 
@@ -183,5 +187,5 @@ module.exports.toImage = async function toImage(output, image, options = {}) {
 
     await res.write(output);
 
-    return generate_image_string(output, options);
+    return generate_image_string(output, options, image.width * FONT_WIDTH, image.height * FONT_HEIGHT);
 }
