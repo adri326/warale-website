@@ -1,8 +1,13 @@
 {
-    "port": 8080,
+    "port": 8443,
     "title": "Warale the Ageless Elder",
     "style": {
-        "main_background": "#110b04",
+        "main_background": "#161515",
         "link_color": "#e98319"
+    },
+    "ssl": {
+        "enabled": true,
+        "key": "secret/local.key",
+        "cert": "secret/local.crt"
     }
 }

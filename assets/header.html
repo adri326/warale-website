@@ -13,8 +13,7 @@
         function set_body_margin_right() {
             if (window.innerWidth % 2 != body_margin_right) {
                 body_margin_right = window.innerWidth % 2;
-                document.body.style.setProperty("--body-margin-right", body_margin_right + "px");
-
+                document.body.style.setProperty("--body-margin-adjust", body_margin_right + "px");
             }
         }
 
@@ -26,7 +25,7 @@
         window.addEventListener("resize", set_body_margin_right);
     </script>
 </head>
-<body style="{{BODY_STYLE}} --body-margin-right: 0px;">
+<body style="{{BODY_STYLE}} --body-margin-adjust: 0px;" class="non-pixel-font">
     {{TITLE_IMG}}
     <main>
         {{DESCRIPTION}}

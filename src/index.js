@@ -1,8 +1,12 @@
-const express = require("express");
-const render = require("./render");
+const http = require("http");
+const https = require("https");
 const fs = require("fs");
-const config = require("../config.json");
+
+const express = require("express");
 const compression = require("compression");
+
+const render = require("./render");
+const config = require("../config.json");
 
 const app = express();
 
@@ -40,11 +44,22 @@ app.get("/", async (req, res) => {
 app.use("/static", express.static("./static"));
 app.use("/generated", express.static("./generated"));
 
-app.listen(config.port);
-
 function body_style() {
     let res = `--main-background: ${config.style?.main_background ?? "black"};`;
     res += `--link-color: ${config.style?.link_color ?? "blue"};`;
 
     return res;
 }
+
+let server;
+if (config.ssl.enabled) {
+    let key = fs.readFileSync(config.ssl.key, "utf8");
+    let cert = fs.readFileSync(config.ssl.cert, "utf8");
+    server = https.createServer({key, cert}, app);
+} else {
+    server = http.createServer(app);
+}
+
+server.listen(config.port, () => {
+    console.log("Server now listening on port", config.port);
+});
