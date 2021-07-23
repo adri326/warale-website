@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{TITLE}}</title>
+    <title>{{title}}</title>
     <link rel="preload" href="/static/style.css" as="style" type="text/css" crossorigin>
     <link rel="preload" href="/generated/borders.png" as="image" type="image/png" crossorigin>
     <link rel="preload" href="/static/warale-font/Warale Font.ttf" as="font" type="font/ttf" crossorigin>
@@ -26,8 +26,6 @@
         window.addEventListener("resize", set_body_margin_right);
     </script>
 </head>
-<body style="{{BODY_STYLE}} --body-margin-adjust: 0px;" class="non-pixel-font">
-    {{TITLE_IMG}}
+<body style="{{#body_style}}--main-background: {{main_background}}; --link-color: {{link_color}};{{/body_style}} --body-margin-adjust: 0px;" class="non-pixel-font">
+    {{{title_img}}}
     <main>
-        {{DESCRIPTION}}
-    </main>

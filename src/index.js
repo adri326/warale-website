@@ -1,9 +1,11 @@
 const http = require("http");
 const https = require("https");
 const fs = require("fs");
+const path = require("path");
 
 const express = require("express");
 const compression = require("compression");
+const hogan = require("hogan.js"); // A mustache implementation that's fast
 
 const render = require("./render");
 const config = require("../config.json");
@@ -14,13 +16,21 @@ if (!fs.existsSync("generated")){
     fs.mkdirSync("generated");
 }
 
-let header = fs.readFileSync("assets/header.html", "utf8");
-let footer = fs.readFileSync("assets/footer.html", "utf8");
-let description = fs.readFileSync("assets/description.html", "utf8");
+let header = fs.readFileSync("assets/header.mustache", "utf8");
+let footer = fs.readFileSync("assets/footer.mustache", "utf8");
+let description = fs.readFileSync("assets/description.mustache", "utf8");
+
+let template = hogan.compile(header + description + footer);
+
+let partials = {};
+for (let file of fs.readdirSync("assets/partials")) {
+    partials[file.replace(/\..*$/g, "")] = hogan.compile(fs.readFileSync(path.join("assets/partials", file), "utf8"));
+}
 
 app.use(compression());
 
 app.get("/", async (req, res) => {
+    console.time("render");
     let title_prom = render("assets/title.xp", "image", {
         classes: "selectable title",
         alt: config.title,
@@ -30,15 +40,18 @@ app.get("/", async (req, res) => {
 
     let [title, borders] = await Promise.all([title_prom, borders_prom]);
 
+    let context = {
+        title_img: title,
+        title: config.title,
+        body_style: {
+            main_background: config.style?.main_background ?? "black",
+            link_color: config.style?.link_color ?? "blue",
+        }
+    };
 
-    res.write(header
-        .replace(/{{TITLE_IMG}}/g, title)
-        .replace(/{{TITLE}}/g, config.title)
-        .replace(/{{BODY_STYLE}}/g, body_style())
-        .replace(/{{DESCRIPTION}}/g, description)
-    );
-    res.write(footer);
+    res.write(template.render(context, partials));
     res.send();
+    console.timeEnd("render");
 });
 
 app.get("/xp.json", async (req, res) => {
@@ -60,13 +73,6 @@ app.get("/xp.json", async (req, res) => {
 
 app.use("/static", express.static("./static"));
 app.use("/generated", express.static("./generated"));
-
-function body_style() {
-    let res = `--main-background: ${config.style?.main_background ?? "black"};`;
-    res += `--link-color: ${config.style?.link_color ?? "blue"};`;
-
-    return res;
-}
 
 let server;
 if (config.ssl.enabled) {
