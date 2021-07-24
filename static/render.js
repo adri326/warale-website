@@ -71,17 +71,19 @@ function get_char(image, x, y) {
 function render_char(ctx, x, y, pixel, clear = true) {
     let char = font_data[~~(pixel.asciiCode / 16)][pixel.asciiCode % 16].data;
     if (!char) return;
+
+    if (pixel.transparent) {
+        if (clear) ctx.clearRect(x * FONT_WIDTH, y * FONT_HEIGHT, FONT_WIDTH, FONT_HEIGHT);
+    } else {
+        ctx.fillStyle = "#" + pixel.bg.hex;
+        ctx.fillRect(x * FONT_WIDTH, y * FONT_HEIGHT, FONT_WIDTH, FONT_HEIGHT);
+    }
+
+    ctx.fillStyle = "#" + pixel.fg.hex;
+
     for (let dy = 0; dy < FONT_HEIGHT; dy++) {
         for (let dx = 0; dx < FONT_WIDTH; dx++) {
-            if (char[4 * (dx + dy * FONT_WIDTH)] > 0) {
-                if (pixel.transparent) {
-                    if (clear) ctx.clearRect(x * FONT_WIDTH + dx, y * FONT_HEIGHT + dy, 1, 1);
-                } else {
-                    ctx.fillStyle = "#" + pixel.bg.hex;
-                    ctx.fillRect(x * FONT_WIDTH + dx, y * FONT_HEIGHT + dy, 1, 1);
-                }
-            } else {
-                ctx.fillStyle = "#" + pixel.fg.hex;
+            if (char[4 * (dx + dy * FONT_WIDTH)] == 0) {
                 ctx.fillRect(x * FONT_WIDTH + dx, y * FONT_HEIGHT + dy, 1, 1);
             }
         }
