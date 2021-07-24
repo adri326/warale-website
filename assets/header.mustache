@@ -12,8 +12,9 @@
     <script defer>
         let body_margin_right = 0;
         function set_body_margin_right() {
-            if (window.innerWidth % 2 != body_margin_right) {
-                body_margin_right = window.innerWidth % 2;
+            let width = document.body.parentElement.clientWidth;
+            if (width % 2 != body_margin_right) {
+                body_margin_right = width % 2;
                 document.body.style.setProperty("--body-margin-adjust", body_margin_right + "px");
             }
         }
@@ -25,7 +26,17 @@
         }
         window.addEventListener("resize", set_body_margin_right);
     </script>
+    <style>
+        {{#body_style}}
+        body {
+            --main-background: {{main_background}};
+            --secondary-background: {{secondary_background}};
+            --link-color: {{link_color}};
+            --summary-color: {{summary_color}};
+        }
+        {{/body_style}}
+    </style>
 </head>
-<body style="{{#body_style}}--main-background: {{main_background}}; --link-color: {{link_color}};{{/body_style}} --body-margin-adjust: 0px;" class="non-pixel-font">
+<body style=" --body-margin-adjust: 0px;" class="non-pixel-font">
     {{{title_img}}}
-
+    <main>

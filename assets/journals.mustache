@@ -1,0 +1,9 @@
+<section class="journals">
+<h1 class="center">Journals</h1>
+{{#journals}}
+    <details id="{{year}}-{{player_sanitized}}">
+        <summary>{{year}} - {{player}}</summary>
+        {{{rendered}}}
+    </details>
+{{/journals}}
+</section>

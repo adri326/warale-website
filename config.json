@@ -3,7 +3,9 @@
     "title": "Warale the Ageless Elder",
     "style": {
         "main_background": "#161515",
-        "link_color": "#e98319"
+        "secondary_background": "#1d1d1f",
+        "link_color": "#e98319",
+        "summary_color": "#e6de50"
     },
     "ssl": {
         "enabled": false,

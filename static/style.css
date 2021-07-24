@@ -24,6 +24,7 @@ body {
 
 div.rexpaint:not(.selectable) {
     user-select: none;
+    -webkit-user-select: none;
 }
 
 div.rexpaint {
@@ -56,7 +57,7 @@ img.rexpaint {
     display: none;
 }
 
-main {
+main > section {
     margin-top: 24px;
     margin-bottom: 48px;
     border: 12px solid orange;
@@ -67,25 +68,23 @@ main {
     color: #e8e8ea;
 }
 
-body:not(.non-pixel-font) main {
+body:not(.non-pixel-font) main > section {
     font-family: "Warale", mono;
-    font-smooth: never;
-    -webkit-font-smoothing: none;
     line-height: 1.4em;
 }
 
-body.non-pixel-font main {
+body.non-pixel-font main > section {
     font-family: 'Courier New', Courier, monospace;
     font-size: 14px;
     line-height: 18px;
 }
 
-body.non-pixel-font main em {
+body.non-pixel-font main > section em {
     font-style: normal;
     font-weight: bold;
 }
 
-body:not(.non-pixel-font) main em {
+body:not(.non-pixel-font) main > section em {
     font-style: normal;
     font-weight: normal;
     color: #ffffff;
@@ -99,12 +98,72 @@ h1 {
     display: inline;
 }
 
+h1:first-child {
+    margin-top: 0;
+}
+
+h1.center {
+    text-align: center;
+    font-size: 20px;
+    display: block;
+}
+
 h2 {
     font-size: 20px;
     font-weight: normal;
     margin-top: 36px;
     margin-bottom: 24px;
+    line-height: 24px;
 }
+
+h2::before {
+    content: "☼";
+    font-family: "Warale", mono;
+    font-size: 20px;
+    margin-right: 12px;
+    opacity: 0.5;
+}
+
+body.non-pixel-font h2::before {
+    font-size: 10px;
+    line-height: 20px;
+    margin-right: 6px;
+    margin-left: 6px;
+    transform: translateY(-1px);
+    display: inline-block;
+}
+
+h3 {
+    font-size: 10px;
+    font-weight: normal;
+    margin-top: 12px;
+    margin-bottom: 12px;
+    margin-left: 24px;
+    text-decoration: underline;
+}
+
+
+body.non-pixel-font h3 {
+    font-size: 16px;
+}
+
+h3::before {
+    content: "*";
+    font-family: "Warale", mono;
+    font-size: 10px;
+    margin-right: 12px;
+    opacity: 0.5;
+    text-decoration: none;
+}
+
+body.non-pixel-font h3::before {
+    font-size: 10px;
+    line-height: 16px;
+    margin-right: 6px;
+    margin-left: 6px;
+    display: inline-block;
+}
+
 
 p {
     margin-top: 0;
@@ -157,6 +216,7 @@ a:visited {
     color: #808080;
     transition: color 0.1s;
     user-select: none;
+    -webkit-user-select: none;
     width: 24px;
     height: 24px;
     text-align: center;
@@ -174,6 +234,7 @@ a:visited {
     margin-bottom: 6px;
     display: inline-block;
     user-select: none;
+    -webkit-user-select: none;
 }
 
 #pixel-font-chooser button#choose-nonpixel {
@@ -184,18 +245,54 @@ a:visited {
 
 #pixel-font-chooser button#choose-pixel, #pixel-font-chooser span {
     font-family: "Warale", mono;
-    font-smooth: never;
-    -webkit-font-smoothing: none;
+}
+
+details {
+    padding: 12px;
+    display: block;
+    margin-top: 6px;
+    margin-bottom: 6px;
+}
+
+details:first-child {
+    margin-top: 0;
+}
+
+details:last-child {
+    margin-bottom: 0;
+}
+
+details[open] {
+    background: var(--secondary-background);
+}
+
+details > summary {
+    cursor: pointer;
+    color: var(--summary-color);
+}
+
+details > summary:hover {
+    text-decoration: underline;
+}
+
+details > summary::marker {
+    content: "► ";
+    font-family: "Warale", mono;
+    font-size: 10px;
+}
+
+details[open] > summary::marker {
+    content: "▼ ";
 }
 
 @media (max-width: 1600px) {
-    main {
+    main > section {
         width: calc(60 * 12px);
     }
 }
 
 @media (max-width: 800px) {
-    main {
+    main > section {
         width: calc(30 * 12px);
     }
 }
@@ -204,7 +301,7 @@ a:visited {
     body {
         align-items: flex-start;
     }
-    main {
+    main > section {
         width: 100%;
         box-sizing: border-box;
     }
