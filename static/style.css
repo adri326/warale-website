@@ -154,6 +154,7 @@ h3::before {
     margin-right: 12px;
     opacity: 0.5;
     text-decoration: none;
+    display: inline-block;
 }
 
 body.non-pixel-font h3::before {
